@@ -1,0 +1,10 @@
+name: 'DFTS Article media fixture'
+type: module
+description: 'Adds an image media reference field to the testing Article content type.'
+package: 'Testing fixtures'
+core_version_requirement: ^10 || ^11
+dependencies:
+  - drup_func_testing_stuff:drup_func_testing_article
+  - drupal:file
+  - drupal:image
+  - drupal:media

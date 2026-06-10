@@ -1,0 +1,9 @@
+name: 'DFTS Article translation fixture'
+type: module
+description: 'Makes the testing Article content type translatable and adds French.'
+package: 'Testing fixtures'
+core_version_requirement: ^10 || ^11
+dependencies:
+  - drup_func_testing_stuff:drup_func_testing_article
+  - drupal:content_translation
+  - drupal:language
