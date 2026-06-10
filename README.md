@@ -1,2 +1,1 @@
-# MockEntityBuilder
-Drupal content entity mock builder
+# Drupal boilerplate functional testing
