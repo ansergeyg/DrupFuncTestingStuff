@@ -1,0 +1,11 @@
+name: 'DFTS Article fixture'
+type: module
+description: 'Provides a configured article content type for functional tests.'
+package: 'Testing fixtures'
+core_version_requirement: ^10 || ^11
+dependencies:
+  - drupal:field
+  - drupal:filter
+  - drupal:node
+  - drupal:text
+  - drupal:user

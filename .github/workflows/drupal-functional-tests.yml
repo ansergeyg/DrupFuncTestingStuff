@@ -1,0 +1,75 @@
+name: Drupal functional tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+    inputs:
+      test_target:
+        description: 'Optional PHPUnit target path inside the Drupal harness.'
+        required: false
+        default: 'web/modules/custom/drup_func_testing_stuff/modules'
+
+concurrency:
+  group: drupal-functional-tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  functional-tests:
+    name: BrowserTestBase fixtures on SQLite
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    env:
+      COMPOSER_MEMORY_LIMIT: -1
+      DRUPALTEST_DIR: /tmp/drupaltest
+      MODULE_LINK_NAME: drup_func_testing_stuff
+      SIMPLETEST_BASE_URL: http://127.0.0.1:8888
+      SIMPLETEST_DB: sqlite://localhost/sites/default/files/.ht.sqlite
+      SERVER_LOG: /tmp/drupaltest-php-server.log
+
+    steps:
+      - name: Check out fixture module repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, xml, gd, pdo_sqlite, sqlite3, curl, zip, dom, filter, json, opcache
+          tools: composer:v2
+          coverage: none
+
+      - name: Show PHP and Composer versions
+        run: |
+          php -v
+          composer --version
+
+      - name: Cache Composer downloads
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.composer/cache/files
+            ~/.cache/composer/files
+          key: composer-${{ runner.os }}-${{ hashFiles('**/composer.json', '**/composer.lock') }}
+          restore-keys: |
+            composer-${{ runner.os }}-
+
+      - name: Prepare Drupal test harness
+        run: scripts/prepare-drupaltest.sh
+
+      - name: Run Drupal fixture functional tests
+        run: |
+          TEST_TARGET="${{ github.event.inputs.test_target || 'web/modules/custom/drup_func_testing_stuff/modules' }}"
+          scripts/run-functional-tests.sh "$TEST_TARGET"
+
+      - name: Upload PHP server log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drupaltest-php-server-log
+          path: /tmp/drupaltest-php-server.log
+          if-no-files-found: ignore
