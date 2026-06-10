@@ -1,0 +1,30 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_content_blocks
+    - node.type.article
+    - paragraphs.paragraphs_type.accordion
+  module:
+    - entity_reference_revisions
+id: node.article.field_content_blocks
+field_name: field_content_blocks
+entity_type: node
+bundle: article
+label: 'Content blocks'
+description: 'Accordion paragraphs for nested paragraph tests.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      accordion: accordion
+    negate: 0
+    target_bundles_drag_drop:
+      accordion:
+        weight: 1
+        enabled: true
+field_type: entity_reference_revisions

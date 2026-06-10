@@ -1,0 +1,5 @@
+name: 'Drupal Functional Testing Stuff'
+type: module
+description: 'Container module for reusable Drupal functional testing fixture submodules.'
+package: 'Testing fixtures'
+core_version_requirement: ^10 || ^11

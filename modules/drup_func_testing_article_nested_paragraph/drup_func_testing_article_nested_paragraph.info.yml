@@ -1,0 +1,10 @@
+name: 'DFTS Article nested paragraph fixture'
+type: module
+description: 'Adds accordion-style nested paragraphs to the testing Article content type.'
+package: 'Testing fixtures'
+core_version_requirement: ^10 || ^11
+dependencies:
+  - drup_func_testing_stuff:drup_func_testing_article
+  - entity_reference_revisions:entity_reference_revisions
+  - paragraphs:paragraphs
+  - drupal:text
