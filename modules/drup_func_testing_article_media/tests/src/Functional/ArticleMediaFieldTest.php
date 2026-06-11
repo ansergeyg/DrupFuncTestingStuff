@@ -3,6 +3,7 @@
 namespace Drupal\Tests\drup_func_testing_article_media\Functional;
 
 use Drupal\file\Entity\File;
+use Drupal\file\FileInterface;
 use Drupal\media\Entity\Media;
 use Drupal\node\Entity\Node;
 use Drupal\Tests\BrowserTestBase;
@@ -38,7 +39,7 @@ final class ArticleMediaFieldTest extends BrowserTestBase {
     $file = File::create([
       'uri' => $image_uri,
       'filename' => 'fixture-image.png',
-      'status' => FILE_STATUS_PERMANENT,
+      'status' => FileInterface::STATUS_PERMANENT,
     ]);
     $file->save();
 

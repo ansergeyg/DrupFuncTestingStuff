@@ -10,6 +10,8 @@ PHPUNIT_CONFIG="${PHPUNIT_CONFIG:-$DRUPALTEST_DIR/web/core/phpunit.xml.dist}"
 SERVER_HOST="${SERVER_HOST:-127.0.0.1}"
 SERVER_PORT="${SERVER_PORT:-8888}"
 SERVER_LOG="${SERVER_LOG:-/tmp/drupaltest-php-server.log}"
+DRUPAL_WEB_ROOT="$DRUPALTEST_DIR/web"
+DRUPAL_ROUTER="$DRUPAL_WEB_ROOT/.ht.router.php"
 
 cd "$DRUPALTEST_DIR"
 
@@ -19,12 +21,18 @@ if [ ! -f "$PHPUNIT_CONFIG" ]; then
   exit 1
 fi
 
+if [ ! -f "$DRUPAL_ROUTER" ]; then
+  echo "Missing Drupal router: $DRUPAL_ROUTER" >&2
+  echo "Run scripts/prepare-drupaltest.sh first." >&2
+  exit 1
+fi
+
 mkdir -p web/sites/default/files
 
 export SIMPLETEST_BASE_URL
 export SIMPLETEST_DB
 
-php -S "$SERVER_HOST:$SERVER_PORT" -t web web/.ht.router.php >"$SERVER_LOG" 2>&1 &
+php -S "$SERVER_HOST:$SERVER_PORT" -t "$DRUPAL_WEB_ROOT" "$DRUPAL_ROUTER" >"$SERVER_LOG" 2>&1 &
 SERVER_PID="$!"
 
 cleanup() {

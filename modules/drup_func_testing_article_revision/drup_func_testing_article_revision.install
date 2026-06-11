@@ -13,6 +13,7 @@ use Drupal\node\Entity\NodeType;
 function drup_func_testing_article_revision_install(): void {
   $type = NodeType::load('article');
   if ($type) {
-    $type->setNewRevision(TRUE)->save();
+    $type->setNewRevision(TRUE);
+    $type->save();
   }
 }
