@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for the Article nested paragraph fixture.
+ */
+
+/**
+ * Adds the content blocks field to Article form and view displays.
+ */
+function drup_func_testing_article_nested_paragraph_install(): void {
+  _drup_func_testing_article_nested_paragraph_set_display_component('entity_form_display', 'node.article.default', 'field_content_blocks', [
+    'type' => 'entity_reference_paragraphs',
+    'weight' => 2,
+    'region' => 'content',
+    'settings' => [
+      'title' => 'Content block',
+      'title_plural' => 'Content blocks',
+      'edit_mode' => 'open',
+      'add_mode' => 'dropdown',
+      'form_display_mode' => 'default',
+      'default_paragraph_type' => 'accordion',
+    ],
+    'third_party_settings' => [],
+  ]);
+
+  _drup_func_testing_article_nested_paragraph_set_display_component('entity_view_display', 'node.article.default', 'field_content_blocks', [
+    'type' => 'entity_reference_revisions_entity_view',
+    'label' => 'above',
+    'weight' => 1,
+    'region' => 'content',
+    'settings' => [
+      'view_mode' => 'default',
+      'link' => '',
+    ],
+    'third_party_settings' => [],
+  ]);
+}
+
+/**
+ * Sets a display component when the display exists.
+ */
+function _drup_func_testing_article_nested_paragraph_set_display_component(string $storage_id, string $display_id, string $field_name, array $component): void {
+  $display = \Drupal::entityTypeManager()->getStorage($storage_id)->load($display_id);
+  if ($display) {
+    $display->setComponent($field_name, $component)->save();
+  }
+}
