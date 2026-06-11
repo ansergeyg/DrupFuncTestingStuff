@@ -6,7 +6,7 @@ MODULE_LINK_NAME="${MODULE_LINK_NAME:-drup_func_testing_stuff}"
 TEST_TARGET="${1:-web/modules/custom/$MODULE_LINK_NAME/modules}"
 SIMPLETEST_BASE_URL="${SIMPLETEST_BASE_URL:-http://127.0.0.1:8888}"
 SIMPLETEST_DB="${SIMPLETEST_DB:-sqlite://localhost/sites/default/files/.ht.sqlite}"
-PHPUNIT_CONFIG="${PHPUNIT_CONFIG:-web/core/phpunit.xml.dist}"
+PHPUNIT_CONFIG="${PHPUNIT_CONFIG:-$DRUPALTEST_DIR/web/core/phpunit.xml.dist}"
 SERVER_HOST="${SERVER_HOST:-127.0.0.1}"
 SERVER_PORT="${SERVER_PORT:-8888}"
 SERVER_LOG="${SERVER_LOG:-/tmp/drupaltest-php-server.log}"
@@ -14,7 +14,7 @@ SERVER_LOG="${SERVER_LOG:-/tmp/drupaltest-php-server.log}"
 cd "$DRUPALTEST_DIR"
 
 if [ ! -f "$PHPUNIT_CONFIG" ]; then
-  echo "Missing PHPUnit config: $DRUPALTEST_DIR/$PHPUNIT_CONFIG" >&2
+  echo "Missing PHPUnit config: $PHPUNIT_CONFIG" >&2
   echo "Run scripts/prepare-drupaltest.sh first." >&2
   exit 1
 fi
