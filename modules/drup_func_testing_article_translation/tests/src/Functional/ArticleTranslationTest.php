@@ -29,7 +29,8 @@ final class ArticleTranslationTest extends BrowserTestBase {
    * Tests that Article nodes can be translated.
    */
   public function testArticleTranslationRenders(): void {
-    $this->assertNotNull(ConfigurableLanguage::load('fr'));
+    $french = ConfigurableLanguage::load('fr');
+    $this->assertNotNull($french);
     $this->assertTrue($this->container->get('content_translation.manager')->isEnabled('node', 'article'));
 
     $node = Node::create([
@@ -54,7 +55,7 @@ final class ArticleTranslationTest extends BrowserTestBase {
     ]);
     $node->save();
 
-    $this->drupalGet($node->getTranslation('fr')->toUrl());
+    $this->drupalGet($node->toUrl('canonical', ['language' => $french]));
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->pageTextContains('Titre de test français');
     $this->assertSession()->pageTextContains('Corps de test français.');
