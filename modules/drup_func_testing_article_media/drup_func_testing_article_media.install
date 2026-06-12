@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for the Article media fixture.
+ */
+
+/**
+ * Adds the media field to Article form and view displays.
+ */
+function drup_func_testing_article_media_install(): void {
+  _drup_func_testing_article_media_set_display_component('entity_form_display', 'node.article.default', 'field_media', [
+    'type' => 'entity_reference_autocomplete',
+    'weight' => 2,
+    'region' => 'content',
+    'settings' => [
+      'match_operator' => 'CONTAINS',
+      'match_limit' => 10,
+      'size' => 60,
+      'placeholder' => '',
+    ],
+    'third_party_settings' => [],
+  ]);
+
+  _drup_func_testing_article_media_set_display_component('entity_view_display', 'node.article.default', 'field_media', [
+    'type' => 'entity_reference_entity_view',
+    'label' => 'above',
+    'weight' => 1,
+    'region' => 'content',
+    'settings' => [
+      'view_mode' => 'default',
+      'link' => false,
+    ],
+    'third_party_settings' => [],
+  ]);
+}
+
+/**
+ * Sets a display component when the display exists.
+ */
+function _drup_func_testing_article_media_set_display_component(string $storage_id, string $display_id, string $field_name, array $component): void {
+  $display = \Drupal::entityTypeManager()->getStorage($storage_id)->load($display_id);
+  if ($display) {
+    $display->setComponent($field_name, $component)->save();
+  }
+}

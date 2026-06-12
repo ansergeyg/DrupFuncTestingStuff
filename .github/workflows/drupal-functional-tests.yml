@@ -1,0 +1,77 @@
+name: Drupal functional tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser-test-base:
+    name: BrowserTestBase fixtures
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+          MYSQL_DATABASE: drupal
+          MYSQL_ROOT_HOST: "%"
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -uroot --protocol=tcp"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    env:
+      COMPOSER_MEMORY_LIMIT: -1
+      COMPOSER_NO_INTERACTION: 1
+      DRUPALTEST_DIR: /tmp/drupaltest
+      MODULE_LINK_NAME: drup_func_testing_stuff
+      SIMPLETEST_BASE_URL: http://127.0.0.1:8080
+      SIMPLETEST_DB: mysql://root:@127.0.0.1/drupal
+      SERVER_HOST: 127.0.0.1
+      SERVER_PORT: 8080
+      SERVER_LOG: /tmp/drupaltest-php-server.log
+
+    steps:
+      - name: Check out fixture module repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: composer:v2
+          extensions: bcmath, ctype, curl, dom, fileinfo, filter, gd, mbstring, openssl, pdo_mysql, session, simplexml, tokenizer, xml, zip
+
+      - name: Cache Composer downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache/files
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Match drupaltest database hostname
+        run: echo "127.0.0.1 mysql" | sudo tee -a /etc/hosts
+
+      - name: Prepare Drupal test harness
+        run: scripts/prepare-drupaltest-ci.sh
+
+      - name: Run Drupal fixture functional tests
+        run: scripts/run-functional-tests.sh
+
+      - name: Show Drupal web server log
+        if: always()
+        run: cat /tmp/drupaltest-php-server.log || true

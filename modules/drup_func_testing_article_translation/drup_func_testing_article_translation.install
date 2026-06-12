@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for the Article translation fixture.
+ */
+
+use Drupal\field\Entity\FieldConfig;
+
+/**
+ * Enables content translation for Article and its Body field.
+ */
+function drup_func_testing_article_translation_install(): void {
+  \Drupal::service('content_translation.manager')->setEnabled('node', 'article', TRUE);
+
+  $body = FieldConfig::loadByName('node', 'article', 'body');
+  if ($body) {
+    $body->setTranslatable(TRUE)->save();
+  }
+}

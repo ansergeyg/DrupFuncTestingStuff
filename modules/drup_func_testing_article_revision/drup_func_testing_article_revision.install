@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for the Article revision fixture.
+ */
+
+use Drupal\node\Entity\NodeType;
+
+/**
+ * Enables default revision creation for Article nodes.
+ */
+function drup_func_testing_article_revision_install(): void {
+  $type = NodeType::load('article');
+  if ($type) {
+    $type->setNewRevision(TRUE);
+    $type->save();
+  }
+}

@@ -1,0 +1,7 @@
+name: 'DFTS Article revision fixture'
+type: module
+description: 'Configures the testing Article content type to create new revisions by default.'
+package: 'Testing fixtures'
+core_version_requirement: ^10 || ^11
+dependencies:
+  - drup_func_testing_stuff:drup_func_testing_article
