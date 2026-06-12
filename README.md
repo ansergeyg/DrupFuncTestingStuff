@@ -33,11 +33,11 @@ Drupal will also enable dependencies declared in the fixture module `.info.yml` 
 
 Paragraph fixtures require the contrib `paragraphs` and `entity_reference_revisions` modules to be available in the Drupal project.
 
-## Local harness using `ansergeyg/drupaltest`
+## Test harness using `ansergeyg/drupaltest`
 
 The scripts in `scripts/` use [`ansergeyg/drupaltest`](https://github.com/ansergeyg/drupaltest) as a disposable Drupal test harness. The harness is intentionally rebuildable and should be treated as a cache, not committed project state.
 
-Prepare the Drupal test project:
+Prepare the Drupal test project. This installs Composer dependencies, adds the fixture-only test dependencies, scaffolds Drupal, symlinks this repository into the harness, and installs the clean Drupal site:
 
 ```bash
 scripts/prepare-drupaltest.sh
@@ -62,14 +62,14 @@ scripts/run-functional-tests.sh web/modules/custom/drup_func_testing_stuff/modul
 | `DRUPALTEST_REPO` | `https://github.com/ansergeyg/drupaltest.git` | Drupal harness repository. |
 | `DRUPALTEST_DIR` | `/tmp/drupaltest` | Local clone/cache path for the Drupal harness. |
 | `MODULE_DIR` | Current repository root | Module package to symlink into the harness. |
+| `MODULE_LINK_NAME` | `drup_func_testing_stuff` | Symlink name under `web/modules/custom`. |
+| `DRUPAL_PARAGRAPHS_CONSTRAINT` | `^1.18` | Paragraphs package constraint installed for Paragraph fixtures. |
+| `DRUPAL_ENTITY_REFERENCE_REVISIONS_CONSTRAINT` | `^1` | Entity Reference Revisions package constraint installed for Paragraph fixtures. |
 | `SIMPLETEST_BASE_URL` | `http://127.0.0.1:8888` | Base URL used by Drupal functional tests. |
 | `SIMPLETEST_DB` | `sqlite://localhost/sites/default/files/.ht.sqlite` | SQLite database URL used by BrowserTestBase. |
 
-The cloud environment used by this agent does not provide Docker, so the harness scripts avoid the Docker/Ahoy path and use Composer plus SQLite instead.
-
-
 ## GitHub Actions
 
-This repository includes `.github/workflows/drupal-functional-tests.yml`, which runs on pull requests and uses `ansergeyg/drupaltest` as a clean Drupal harness. The workflow installs the missing test dependencies, symlinks this module into the harness, installs Drupal, and runs the `BrowserTestBase` fixture tests.
+This repository includes `.github/workflows/drupal-functional-tests.yml`, which runs on pull requests and uses `ansergeyg/drupaltest` as a clean Drupal harness. The workflow runs `scripts/prepare-drupaltest.sh`, starts PHP's built-in web server, and runs the `BrowserTestBase` fixture tests against MySQL.
 
 See `workflow.md` for setup details and the exact CI flow.

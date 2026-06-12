@@ -16,10 +16,9 @@ This project includes `.github/workflows/drupal-functional-tests.yml` to run the
 7. Allows Composer plugins needed by Drupal development tooling:
    - `phpstan/extension-installer`.
    - `dealerdirect/phpcodesniffer-composer-installer`.
-8. Scaffolds Drupal files and installs the clean Drupal site with `vendor/bin/robo drup`.
-9. Symlinks this repository into `web/modules/custom/drup_func_testing_stuff`.
-10. Starts PHP's built-in web server.
-11. Runs the `BrowserTestBase` tests in `modules/*/tests/src/Functional`.
+8. Runs `scripts/prepare-drupaltest.sh`, which scaffolds Drupal files, symlinks this repository into the harness, and installs the clean Drupal site with `vendor/bin/robo drup`.
+9. Starts PHP's built-in web server.
+10. Runs the `BrowserTestBase` tests in `modules/*/tests/src/Functional`.
 
 ## How to enable it on GitHub
 
@@ -48,6 +47,6 @@ You can also run it manually from **Actions** â†’ **Drupal functional tests** â†
 
 ## Composer dependency notes
 
-The CI prepare script uses `--with-all-dependencies` when requiring missing test dependencies. This lets Composer adjust locked transitive packages, which is necessary when adding `drupal/core-dev` to an existing Drupal project.
+The prepare script uses `--with-all-dependencies` when requiring missing test dependencies. This lets Composer adjust locked transitive packages, which is necessary when adding `drupal/core-dev` to an existing Drupal project.
 
 The script requires `drupal/core-dev` at the exact installed `drupal/core` version instead of a loose major constraint. That keeps Drupal core and core-dev synchronized with the version selected by `ansergeyg/drupaltest`.

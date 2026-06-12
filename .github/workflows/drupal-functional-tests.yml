@@ -67,7 +67,7 @@ jobs:
         run: echo "127.0.0.1 mysql" | sudo tee -a /etc/hosts
 
       - name: Prepare Drupal test harness
-        run: scripts/prepare-drupaltest-ci.sh
+        run: scripts/prepare-drupaltest.sh
 
       - name: Run Drupal fixture functional tests
         run: scripts/run-functional-tests.sh
