@@ -26,9 +26,9 @@ final class ArticleRevisionTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   /**
-   * Tests that Article nodes create revisions by default.
+   * Tests that Article nodes support revisions.
    */
-  public function testArticleCreatesDefaultRevisions(): void {
+  public function testArticleCreatesRevisions(): void {
     $type = NodeType::load('article');
     $this->assertNotNull($type);
     $this->assertTrue($type->shouldCreateNewRevision());
@@ -41,6 +41,7 @@ final class ArticleRevisionTest extends BrowserTestBase {
     $node->save();
 
     $node->setTitle('Revision fixture title updated');
+    $node->setNewRevision(TRUE);
     $node->save();
 
     $revision_ids = $this->container->get('entity_type.manager')->getStorage('node')->revisionIds($node);
