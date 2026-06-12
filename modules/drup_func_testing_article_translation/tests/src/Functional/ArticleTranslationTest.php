@@ -47,8 +47,12 @@ final class ArticleTranslationTest extends BrowserTestBase {
       ->set('url.prefixes.fr', 'fr')
       ->save();
     $language_negotiator = $this->container->get('language_negotiator');
-    $language_negotiator->saveConfiguration(LanguageInterface::TYPE_INTERFACE, LanguageNegotiationUrl::METHOD_ID, 0);
-    $language_negotiator->saveConfiguration(LanguageInterface::TYPE_CONTENT, LanguageNegotiationUrl::METHOD_ID, 0);
+    $language_negotiator->saveConfiguration(LanguageInterface::TYPE_INTERFACE, [
+      LanguageNegotiationUrl::METHOD_ID => 0,
+    ]);
+    $language_negotiator->saveConfiguration(LanguageInterface::TYPE_CONTENT, [
+      LanguageNegotiationUrl::METHOD_ID => 0,
+    ]);
 
     $node = Node::create([
       'type' => 'article',
