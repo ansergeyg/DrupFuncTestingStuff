@@ -2,7 +2,9 @@
 
 namespace Drupal\Tests\drup_func_testing_article_translation\Functional;
 
+use Drupal\Core\Language\LanguageInterface;
 use Drupal\language\Entity\ConfigurableLanguage;
+use Drupal\language\Plugin\LanguageNegotiation\LanguageNegotiationUrl;
 use Drupal\node\Entity\Node;
 use Drupal\Tests\BrowserTestBase;
 
@@ -32,6 +34,21 @@ final class ArticleTranslationTest extends BrowserTestBase {
     $french = ConfigurableLanguage::load('fr');
     $this->assertNotNull($french);
     $this->assertTrue($this->container->get('content_translation.manager')->isEnabled('node', 'article'));
+
+    $this->config('language.types')
+      ->set('configurable', [
+        LanguageInterface::TYPE_INTERFACE,
+        LanguageInterface::TYPE_CONTENT,
+      ])
+      ->save();
+    $this->config('language.negotiation')
+      ->set('url.source', LanguageNegotiationUrl::CONFIG_PATH_PREFIX)
+      ->set('url.prefixes.en', 'en')
+      ->set('url.prefixes.fr', 'fr')
+      ->save();
+    $language_negotiator = $this->container->get('language_negotiator');
+    $language_negotiator->saveConfiguration(LanguageInterface::TYPE_INTERFACE, LanguageNegotiationUrl::METHOD_ID, 0);
+    $language_negotiator->saveConfiguration(LanguageInterface::TYPE_CONTENT, LanguageNegotiationUrl::METHOD_ID, 0);
 
     $node = Node::create([
       'type' => 'article',
