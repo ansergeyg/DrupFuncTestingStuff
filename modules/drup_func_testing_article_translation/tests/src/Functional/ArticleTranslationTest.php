@@ -31,28 +31,16 @@ final class ArticleTranslationTest extends BrowserTestBase {
    * Tests that Article nodes can be translated.
    */
   public function testArticleTranslationRenders(): void {
-    $french = ConfigurableLanguage::load('fr');
-    $this->assertNotNull($french);
+    $this->assertNotNull(ConfigurableLanguage::load('fr'));
     $this->assertTrue($this->container->get('content_translation.manager')->isEnabled('node', 'article'));
 
-    $this->config('language.types')
-      ->set('configurable', [
-        LanguageInterface::TYPE_INTERFACE,
-        LanguageInterface::TYPE_CONTENT,
-      ])
-      ->save();
     $this->config('language.negotiation')
-      ->set('url.source', LanguageNegotiationUrl::CONFIG_PATH_PREFIX)
-      ->set('url.prefixes.en', 'en')
       ->set('url.prefixes.fr', 'fr')
       ->save();
-    $language_negotiator = $this->container->get('language_negotiator');
-    $language_negotiator->saveConfiguration(LanguageInterface::TYPE_INTERFACE, [
+    $this->container->get('language_negotiator')->saveConfiguration(LanguageInterface::TYPE_CONTENT, [
       LanguageNegotiationUrl::METHOD_ID => 0,
     ]);
-    $language_negotiator->saveConfiguration(LanguageInterface::TYPE_CONTENT, [
-      LanguageNegotiationUrl::METHOD_ID => 0,
-    ]);
+    $this->container->get('language_manager')->reset();
 
     $node = Node::create([
       'type' => 'article',
@@ -76,7 +64,7 @@ final class ArticleTranslationTest extends BrowserTestBase {
     ]);
     $node->save();
 
-    $this->drupalGet($node->toUrl('canonical', ['language' => $french]));
+    $this->drupalGet('fr/node/' . $node->id());
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->pageTextContains('Titre de test français');
     $this->assertSession()->pageTextContains('Corps de test français.');
